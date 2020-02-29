@@ -42,6 +42,7 @@ Chromosome.prototype.getFitness = function() {
         conflicts += ((q_ndiag[i] * (q_ndiag[i] - 1)) / 2);
         conflicts += ((q_pdiag[i] * (q_pdiag[i] - 1)) / 2);
     }
+    this.fitness = 1-(conflicts/28); // 28 is maximum number of conflicts, inverse so higher fitness = less conflict percentage
 }
 
 // One point crossover with two parent Chromosomes
