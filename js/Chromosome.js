@@ -10,6 +10,40 @@ Chromosome.prototype.initalize = function() {
     }
 }
 
+Chromosome.prototype.getFitness = function() {
+    let numOfQueens = 8;
+    let queenArray = new Array(numOfQueens);
+    let conflicts = 0;
+
+    // Converts binary genome to decimal genome
+    for (let i = 1; i < (this.geno.length/3)+1; i++) {
+        let binaryValue = "" + this.geno[(i*3)-3] + this.geno[(i*3)-2] + this.geno[(i*3)-1];
+        this.queenArray[i-1] = parseInt(binaryValue, 2);
+    }
+
+    // Iterates through array of queens, countes how many queens on each row and diagonals
+    // Queens on n-slope diagonals have the same sum of column + row num (i + x)
+    // Queens on p-slope diagonals have same sum of column (i) + inverted row (numOfQueens-1 - x)
+    let q_row = new Array(numOfQueens*2).fill(0);
+    let q_ndiag = new Array(numOfQueens*2).fill(0);
+    let q_pdiag = new Array(numOfQueens*2).fill(0);
+    for (let i = 0; i < numOfQueens; i++) {
+        let x = queenArray[i];
+        q_row[x]++; // Counter for rows
+        q_ndiag[x + i]++; // Counter for negative slope diagonals
+        q_pdiag[numOfQueens - 1 - x + i]++; // Counter for positive slope diagonals
+    }
+
+    // (X * (X-1)) / 2 = number of conflicts per straight line (row / diagonal)
+    // Counts conflicts based on num of queens per row
+    // Iterates numOfQueens*2 because diagonals can be stored up to value of 14
+    for (let i = 0; i < numOfQueens*2; i++) {
+        conflicts += ((q_row[i] * (q_row[i] - 1)) / 2);
+        conflicts += ((q_ndiag[i] * (q_ndiag[i] - 1)) / 2);
+        conflicts += ((q_pdiag[i] * (q_pdiag[i] - 1)) / 2);
+    }
+}
+
 // One point crossover with two parent Chromosomes
 Chromosome.prototype.crossOver = function(otherChromo) {
     let crossPoint = Math.round(Math.random()*this.geno.length);
