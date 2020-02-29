@@ -8,11 +8,18 @@ var position = {
 chessboard.setQueens(position);
 
 function startGen(event) {
-  let chromoNum = document.getElementById('input-chromo').value;
-  let mutation = document.getElementById('input-mut').value;
-  let maxGen = document.getElementById('input-cut').value;
+  let chromoNum = parseInt(document.getElementById('input-chromo').value);
+  let mutation = parseFloat(document.getElementById('input-mut').value);
+  let maxGen = parseInt(document.getElementById('input-cut').value);
 
-  console.log(chromoNum, mutation, maxGen);
+  let dna1 = new DNA(chromoNum);
+  let dna2 = new DNA(chromoNum);
+  dna1.initalize();
+  dna2.initalize();
+  //dna1.crossOver(dna2);
+  console.log(dna1.geno);
+  dna1.mutate(mutation);
+  console.log(dna1.geno,'\n');
   event.preventDefault();
 }
 
