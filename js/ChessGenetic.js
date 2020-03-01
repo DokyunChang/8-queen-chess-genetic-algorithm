@@ -43,7 +43,8 @@ ChessGenetic.prototype.selection = function() {
 // Run the genetic algorithm
 ChessGenetic.prototype.step = function() {
     this.chromosomes.forEach(chromosome => {
-        chromosome.getFitness();
+        //chromosome.getFitness();
+        chromosome.setFitness();
     });
 
     this.selection();

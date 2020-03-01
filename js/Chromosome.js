@@ -10,12 +10,25 @@ Chromosome.prototype.initalize = function() {
     }
 }
 
+// Convert the geno binary to decimal
+Chromosome.prototype.binaryToDec = function() {
+    let decimalGenes = [];
+
+    for (let index = 0; index < this.genes.length; index+=3) {
+        let decimal = this.genes[index] * 4 + this.genes[index+1] * 2 + this.genes[index+2] * 1;
+        decimalGenes.push(decimal);
+    }
+
+    return decimalGenes;
+}
+
+/*
 Chromosome.prototype.getFitness = function() {
     let numOfQueens = 8;
     let queenArray = new Array(numOfQueens);
     let conflicts = 0;
 
-    // Converts binary genome to decimal genome
+    // Converts binary genes to decimal genes
     for (let i = 1; i < (this.genes.length/3)+1; i++) {
         let binaryValue = "" + this.genes[(i*3)-3] + this.genes[(i*3)-2] + this.genes[(i*3)-1];
         queenArray[i-1] = parseInt(binaryValue, 2);
@@ -44,6 +57,36 @@ Chromosome.prototype.getFitness = function() {
     }
     this.fitness = 1-(conflicts/28); // 28 is maximum number of conflicts, inverse so higher fitness = less conflict percentage
 }
+*/
+
+Chromosome.prototype.setFitness = function() {
+    let conflicts = 0;
+    let rowCheck = new Array(8).fill(0);
+    let binaryGenes = this.binaryToDec();
+
+    // Checking conflicting rows
+    binaryGenes.forEach(gene => {
+        rowCheck[gene] == 0 ? rowCheck[gene] = 1 : conflicts++;
+    });
+
+    // Checking conflicting diagonals
+    for (let gene1 = 0; gene1 < binaryGenes.length; gene1++) {
+        for (let gene2 = 0; gene2 < binaryGenes.length; gene2++) {
+            let x = Math.abs(gene1 - gene2);
+            let y = Math.abs(binaryGenes[gene1] - binaryGenes[gene2]);
+
+            if (x == y) {
+                conflicts ++;
+            }
+        }
+    }
+
+    // Remove diagonal conflicts caused by queens checking themselves 
+    conflicts = conflicts - 8;
+    // Set fitness for this chromosome
+    this.fitness = 1-(conflicts/56) // 56 is the maximum number of conflicts that can accour in the function
+    console.log(conflicts);
+}
 
 // One point crossover with two parent Chromosomes
 Chromosome.prototype.crossover = function(otherChromo) {
@@ -55,26 +98,14 @@ Chromosome.prototype.crossover = function(otherChromo) {
 
     // Set offspring to the parent object
     this.genes = offspring1;
-    otherChromo.geno = offspring2;
+    otherChromo.genes = offspring2;
 }
 
-// Mutation of the geno
+// Mutation of the genes
 Chromosome.prototype.mutate = function(mutFactor) {
     for (let index = 0; index < this.genes.length; index++) {
         if (Math.random() < mutFactor) {
             this.genes[index] = 1 - this.genes[index];
         }
     }
-}
-
-// Convert the geno binary to decimal
-Chromosome.prototype.binaryToDec = function() {
-    let decimalGenes = [];
-
-    for (let index = 0; index < this.genes.length; index+=3) {
-        let decimal = this.genes[index] * 4 + this.genes[index] * 2 + this.genes[index] * 1;
-        decimalGenes.push(decimal);
-    }
-
-    return decimalGenes;
 }

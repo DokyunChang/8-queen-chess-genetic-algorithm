@@ -29,12 +29,15 @@ function genLoop (curGeneration, maxGen) {
     display(curGeneration, bestChromosome.fitness.toFixed(3))
     let coordinates = bestChromosome.binaryToDec();
     let positions = setPositions(coordinates);
+    console.log(positions);
+    console.log(coordinates);
+    console.log(bestChromosome);
     chessboard.setQueens(positions);
-     
-    if (curGeneration < maxGen) {      
+
+    if (curGeneration < maxGen) { 
       genLoop(curGeneration, maxGen);          
     }                       
-}, 50)
+}, 1)
 }
 
 function startGen(event) {
@@ -45,9 +48,6 @@ function startGen(event) {
   let curGeneration = 0;
 
   queenProblem = new ChessGenetic(GENO_SIZE, population, mutation);
-  queenProblem.step();
-  bestChromosome = queenProblem.getBestChromosome();
-
   genLoop(curGeneration, maxGen);
   event.preventDefault();
 }
