@@ -1,12 +1,12 @@
 function Chromosome(genoSize) {
     this.fitness = 0;
-    this.geno = new Array(genoSize);
+    this.genes = new Array(genoSize);
 }
 
 // Populate the geno to have 0s and 1s
 Chromosome.prototype.initalize = function() {
-    for (let index = 0; index < this.geno.length; index++) {
-        Math.random() > 0.5 ? this.geno[index] = 1 : this.geno[index] = 0;   
+    for (let index = 0; index < this.genes.length; index++) {
+        Math.random() > 0.5 ? this.genes[index] = 1 : this.genes[index] = 0;   
     }
 }
 
@@ -16,9 +16,9 @@ Chromosome.prototype.getFitness = function() {
     let conflicts = 0;
 
     // Converts binary genome to decimal genome
-    for (let i = 1; i < (this.geno.length/3)+1; i++) {
-        let binaryValue = "" + this.geno[(i*3)-3] + this.geno[(i*3)-2] + this.geno[(i*3)-1];
-        this.queenArray[i-1] = parseInt(binaryValue, 2);
+    for (let i = 1; i < (this.genes.length/3)+1; i++) {
+        let binaryValue = "" + this.genes[(i*3)-3] + this.genes[(i*3)-2] + this.genes[(i*3)-1];
+        queenArray[i-1] = parseInt(binaryValue, 2);
     }
 
     // Iterates through array of queens, countes how many queens on each row and diagonals
@@ -46,23 +46,35 @@ Chromosome.prototype.getFitness = function() {
 }
 
 // One point crossover with two parent Chromosomes
-Chromosome.prototype.crossOver = function(otherChromo) {
-    let crossPoint = Math.round(Math.random()*this.geno.length);
-    let offspring1 = this.geno.slice(0, crossPoint);
-    let offspring2 = otherChromo.geno.slice(0, crossPoint);
-    offspring1 = offspring1.concat(otherChromo.geno.slice(crossPoint));
-    offspring2 = offspring2.concat(this.geno.slice(crossPoint));
+Chromosome.prototype.crossover = function(otherChromo) {
+    let crossPoint = Math.round(Math.random()*this.genes.length);
+    let offspring1 = this.genes.slice(0, crossPoint);
+    let offspring2 = otherChromo.genes.slice(0, crossPoint);
+    offspring1 = offspring1.concat(otherChromo.genes.slice(crossPoint));
+    offspring2 = offspring2.concat(this.genes.slice(crossPoint));
 
     // Set offspring to the parent object
-    this.geno = offspring1;
+    this.genes = offspring1;
     otherChromo.geno = offspring2;
 }
 
 // Mutation of the geno
 Chromosome.prototype.mutate = function(mutFactor) {
-    for (let index = 0; index < this.geno.length; index++) {
+    for (let index = 0; index < this.genes.length; index++) {
         if (Math.random() < mutFactor) {
-            this.geno[index] = 1 - this.geno[index];
+            this.genes[index] = 1 - this.genes[index];
         }
     }
+}
+
+// Convert the geno binary to decimal
+Chromosome.prototype.binaryToDec = function() {
+    let decimalGenes = [];
+
+    for (let index = 0; index < this.genes.length; index+=3) {
+        let decimal = this.genes[index] * 4 + this.genes[index] * 2 + this.genes[index] * 1;
+        decimalGenes.push(decimal);
+    }
+
+    return decimalGenes;
 }
