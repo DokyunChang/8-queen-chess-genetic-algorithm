@@ -60,32 +60,35 @@ Chromosome.prototype.getFitness = function() {
 */
 
 Chromosome.prototype.setFitness = function() {
-    let conflicts = 0;
+    let rowConflicts = 0;
+    let diagConflicts = 0;
     let rowCheck = new Array(8).fill(0);
     let binaryGenes = this.binaryToDec();
 
-    // Checking conflicting rows
-    binaryGenes.forEach(gene => {
-        rowCheck[gene] == 0 ? rowCheck[gene] = 1 : conflicts++;
-    });
-
-    // Checking conflicting diagonals
+    // Checking conflicting queens in rows
+    for (let gene1 = 0; gene1 < binaryGenes.length; gene1++) {
+        for (let gene2 = 0; gene2 < binaryGenes.length; gene2++) {
+            if (binaryGenes[gene1] == binaryGenes[gene2] && gene1 != gene2) {
+                rowConflicts++;
+            }
+        }
+    }
+    
+    // Checking conflicting queens in diagonal
     for (let gene1 = 0; gene1 < binaryGenes.length; gene1++) {
         for (let gene2 = 0; gene2 < binaryGenes.length; gene2++) {
             let x = Math.abs(gene1 - gene2);
             let y = Math.abs(binaryGenes[gene1] - binaryGenes[gene2]);
 
-            if (x == y) {
-                conflicts ++;
+            if (x == y && gene1 != gene2) {
+                diagConflicts ++;
             }
         }
     }
 
-    // Remove diagonal conflicts caused by queens checking themselves 
-    conflicts = conflicts - 8;
+    let totalConflicts = rowConflicts + diagConflicts;
     // Set fitness for this chromosome
-    this.fitness = 1-(conflicts/56) // 56 is the maximum number of conflicts that can accour in the function
-    console.log(conflicts);
+    this.fitness = 1 - (totalConflicts/56); // 56 is the maximum number of conflicts that can accour in the function
 }
 
 // One point crossover with two parent Chromosomes
