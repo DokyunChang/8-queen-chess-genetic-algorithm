@@ -59,12 +59,11 @@ Chromosome.prototype.getFitness = function() {
 
 // One point crossover with two parent Chromosomes
 Chromosome.prototype.crossover = function(otherChromo) {
-    let crossPoint = Math.round(Math.random()*this.genes.length);
-    let offspring1 = this.genes.slice(0, crossPoint);
-    let offspring2 = otherChromo.genes.slice(0, crossPoint);
-    offspring1 = offspring1.concat(otherChromo.genes.slice(crossPoint));
-    offspring2 = offspring2.concat(this.genes.slice(crossPoint));
-
+    let crossPoint = Math.round(Math.random()*(this.genes.length/3));
+    let offspring1 = this.genes.slice(0, crossPoint*3);
+    let offspring2 = otherChromo.genes.slice(0, crossPoint*3);
+    offspring1 = offspring1.concat(otherChromo.genes.slice(crossPoint*3));
+    offspring2 = offspring2.concat(this.genes.slice(crossPoint*3));
     // Set the chromosome to new offsprings
     this.genes = offspring1;
     otherChromo.genes = offspring2;
