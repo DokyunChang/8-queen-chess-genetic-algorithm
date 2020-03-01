@@ -31,7 +31,7 @@ function genLoop (curGeneration, maxGen) {
     let positions = setPositions(coordinates);
     chessboard.setQueens(positions);
 
-    if (curGeneration < maxGen && curGeneration.fitness != 1) { 
+    if (curGeneration < maxGen && bestChromosome.fitness != 1) { 
       genLoop(curGeneration, maxGen);          
     }                       
 }, 0)
