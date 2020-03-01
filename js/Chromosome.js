@@ -22,7 +22,6 @@ Chromosome.prototype.binaryToDec = function() {
     return decimalGenes;
 }
 
-/*
 Chromosome.prototype.getFitness = function() {
     let numOfQueens = 8;
     let queenArray = new Array(numOfQueens);
@@ -57,39 +56,6 @@ Chromosome.prototype.getFitness = function() {
     }
     this.fitness = 1-(conflicts/28); // 28 is maximum number of conflicts, inverse so higher fitness = less conflict percentage
 }
-*/
-
-Chromosome.prototype.setFitness = function() {
-    let rowConflicts = 0;
-    let diagConflicts = 0;
-    let rowCheck = new Array(8).fill(0);
-    let binaryGenes = this.binaryToDec();
-
-    // Checking conflicting queens in rows
-    for (let gene1 = 0; gene1 < binaryGenes.length; gene1++) {
-        for (let gene2 = 0; gene2 < binaryGenes.length; gene2++) {
-            if (binaryGenes[gene1] == binaryGenes[gene2] && gene1 != gene2) {
-                rowConflicts++;
-            }
-        }
-    }
-    
-    // Checking conflicting queens in diagonal
-    for (let gene1 = 0; gene1 < binaryGenes.length; gene1++) {
-        for (let gene2 = 0; gene2 < binaryGenes.length; gene2++) {
-            let x = Math.abs(gene1 - gene2);
-            let y = Math.abs(binaryGenes[gene1] - binaryGenes[gene2]);
-
-            if (x == y && gene1 != gene2) {
-                diagConflicts ++;
-            }
-        }
-    }
-
-    let totalConflicts = rowConflicts + diagConflicts;
-    // Set fitness for this chromosome
-    this.fitness = 1 - (totalConflicts/56); // 56 is the maximum number of conflicts that can accour in the function
-}
 
 // One point crossover with two parent Chromosomes
 Chromosome.prototype.crossover = function(otherChromo) {
@@ -99,7 +65,7 @@ Chromosome.prototype.crossover = function(otherChromo) {
     offspring1 = offspring1.concat(otherChromo.genes.slice(crossPoint));
     offspring2 = offspring2.concat(this.genes.slice(crossPoint));
 
-    // Set offspring to the parent object
+    // Set the chromosome to new offsprings
     this.genes = offspring1;
     otherChromo.genes = offspring2;
 }

@@ -23,7 +23,7 @@ function display(curGeneration, bestFitness) {
 
 function genLoop (curGeneration, maxGen) {    
   setTimeout(function () {  
-    curGeneration++;    
+    curGeneration++;   
     queenProblem.step();
     bestChromosome = queenProblem.getBestChromosome();
     display(curGeneration, bestChromosome.fitness.toFixed(3))
@@ -34,16 +34,7 @@ function genLoop (curGeneration, maxGen) {
     if (curGeneration < maxGen && curGeneration.fitness != 1) { 
       genLoop(curGeneration, maxGen);          
     }                       
-}, 50)
-}
-
-function test() {
-  let test = queenProblem.getBestChromosome();
-  test.setFitness();
-  console.log(test);
-  let coordinates = test.binaryToDec();
-  let positions = setPositions(coordinates);
-  chessboard.setQueens(positions);
+}, 0)
 }
 
 function startGen(event) {

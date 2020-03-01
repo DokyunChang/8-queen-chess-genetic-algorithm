@@ -15,48 +15,50 @@ ChessGenetic.prototype.selection = function() {
     let totalSum = 0;
     let partialSum = 0;
     let rand = 0;
-    let newChromosomes = [];
+    let parentChromosome;
 
     this.chromosomes.forEach(chromosome => {
         totalSum += chromosome.fitness;
     });
     
     // Select next generation of parent chromosomes
-    for (let index = 0; index < this.population; index++) {
-        rand = Math.random()*totalSum;
+    rand = Math.random()*totalSum;
 
-        for (let i = 0; i < this.population; i++) {
-            partialSum += this.chromosomes[i].fitness;
+    for (let i = 0; i < this.population; i++) {
+        partialSum += this.chromosomes[i].fitness;
     
-            if (partialSum >= rand) {
-                partialSum = 0;
-                newChromosomes.push(this.chromosomes[i]);
-                break;
-            }
-            
+        if (partialSum >= rand) {
+            parentChromosome = this.chromosomes[i];
+            break;
         }
+            
     }
 
-    // Replace current generation with the new parents
-    this.chromosomes = newChromosomes;
+    // Return the selected parent
+    return parentChromosome
 }
 
 // Run the genetic algorithm
 ChessGenetic.prototype.step = function() {
     this.chromosomes.forEach(chromosome => {
         //chromosome.getFitness();
-        chromosome.setFitness();
+        chromosome.getFitness();
     });
-    console.log('parent',this.chromosomes);
-    this.selection();
-    console.log('child',this.chromosomes);
 
-    for (let index = 0; index < this.population; index+=2) {
-        this.chromosomes[index].crossover(this.chromosomes[index+1]);
-        this.chromosomes[index].mutate(0.01);
-        this.chromosomes[index+1].mutate(0.01);
+    let nextGenChromosomes = new Array();
+
+    // Select and crossover next generation
+    for (let generation = 0; generation < this.population; generation+=2) {
+        nextChromosome1 = this.selection();
+        nextChromosome2 = this.selection();
+        nextChromosome1.crossover(nextChromosome2);
+        nextChromosome1.mutate(this.mutateFactor);
+        nextChromosome2.mutate(this.mutateFactor);
+        nextGenChromosomes.push(nextChromosome1, nextChromosome2);
     }
 
+    // Set the next generation of chromosomes as the current ones
+    this.chromosomes = nextGenChromosomes;
 }
 
 ChessGenetic.prototype.getBestChromosome = function() {
