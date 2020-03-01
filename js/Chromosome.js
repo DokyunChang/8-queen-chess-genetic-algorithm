@@ -1,6 +1,7 @@
 function Chromosome(genoSize) {
     this.fitness = 0;
     this.genes = new Array(genoSize);
+    this.conflictCount = 0;
 }
 
 // Populate the geno to have 0s and 1s
@@ -45,7 +46,6 @@ Chromosome.prototype.getFitness = function() {
         q_ndiag[x + i]++; // Counter for negative slope diagonals
         q_pdiag[numOfQueens - 1 - x + i]++; // Counter for positive slope diagonals
     }
-
     // (X * (X-1)) / 2 = number of conflicts per straight line (row / diagonal)
     // Counts conflicts based on num of queens per row
     // Iterates numOfQueens*2 because diagonals can be stored up to value of 14
@@ -54,16 +54,17 @@ Chromosome.prototype.getFitness = function() {
         conflicts += ((q_ndiag[i] * (q_ndiag[i] - 1)) / 2);
         conflicts += ((q_pdiag[i] * (q_pdiag[i] - 1)) / 2);
     }
+    this.conflictCount = conflicts;
     this.fitness = 1-(conflicts/28); // 28 is maximum number of conflicts, inverse so higher fitness = less conflict percentage
 }
 
 // One point crossover with two parent Chromosomes
 Chromosome.prototype.crossover = function(otherChromo) {
-    let crossPoint = Math.round(Math.random()*(this.genes.length/3));
-    let offspring1 = this.genes.slice(0, crossPoint*3);
-    let offspring2 = otherChromo.genes.slice(0, crossPoint*3);
-    offspring1 = offspring1.concat(otherChromo.genes.slice(crossPoint*3));
-    offspring2 = offspring2.concat(this.genes.slice(crossPoint*3));
+    let crossPoint = Math.round(Math.random()*(this.genes.length/3))*3;
+    let offspring1 = this.genes.slice(0, crossPoint);
+    let offspring2 = otherChromo.genes.slice(0, crossPoint);
+    offspring1 = offspring1.concat(otherChromo.genes.slice(crossPoint));
+    offspring2 = offspring2.concat(this.genes.slice(crossPoint));
     // Set the chromosome to new offsprings
     this.genes = offspring1;
     otherChromo.genes = offspring2;
