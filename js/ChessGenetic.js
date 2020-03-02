@@ -10,15 +10,36 @@ function ChessGenetic(geneSize, population, mutFactor) {
     }
 }
 
+// Sort Chromosomes array by descending order
+function compare(a, b) {
+    let chromosome1 = a.fitness;
+    let chromosome2 = b.fitness;
+    let comparison = 0;
+
+    if (chromosome1 > chromosome2) {
+        comparison = -1;
+    } else if(chromosome1 < chromosome2) {
+        comparison = 1;
+    }
+
+    return comparison;
+}
+
 // Select parents from current generation using Roulette Wheel Selection
 ChessGenetic.prototype.selection = function() {
+    this.chromosomes.sort(compare);
+    let selectFator = 5;
+    let rand = Math.floor(Math.pow(Math.random(), selectFator) * this.population);
+    let parent = this.chromosomes[rand];
+
+    return parent;
     /*
     var pop = this.population-1;
     var random = Math.random();
     var randomIndex = Math.round(pop-pop*Math.pow(random, 5));
     return this.chromosomes[randomIndex]
     */
-
+    /*
     let nonConflictSum = 0;
     let partialSum = 0;
     let rand = 0;
@@ -44,6 +65,7 @@ ChessGenetic.prototype.selection = function() {
 
     // Return the selected parent
     return selectedChromosome
+    */
 }
 
 
