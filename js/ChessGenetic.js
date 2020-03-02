@@ -33,54 +33,14 @@ ChessGenetic.prototype.selection = function() {
     let parent = this.chromosomes[rand];
 
     return parent;
-    /*
-    var pop = this.population-1;
-    var random = Math.random();
-    var randomIndex = Math.round(pop-pop*Math.pow(random, 5));
-    return this.chromosomes[randomIndex]
-    */
-    /*
-    let nonConflictSum = 0;
-    let partialSum = 0;
-    let rand = 0;
-    let selectedChromosome;
-
-    // Sum up the non-conflict pairs of each chromosome
-    this.chromosomes.forEach(chromosome => {
-        nonConflictSum += chromosome.nonConflict;
-    });
-    
-    // Select next generation of parent chromosomes
-    rand = Math.random(); // Pick between 0 and 1
-
-    for (let i = 0; i < this.population; i++) {
-        partialSum += (this.chromosomes[i].nonConflict / nonConflictSum);
-    
-        if (partialSum >= rand) {
-            selectedChromosome = this.chromosomes[i];
-            break;
-        }
-            
-    }
-
-    // Return the selected parent
-    return selectedChromosome
-    */
 }
 
 // Run one iteration of the genetic algorithm
 ChessGenetic.prototype.step = function() {
     let nextGenChromosomes = new Array();
 
-    let fraction = 0.1;
-    let numberSaved = Math.floor(fraction*this.population);
-    this.chromosomes.sort(compare);
-    for (let i = 0; i<numberSaved; i++) {
-        nextGenChromosomes[i] = this.chromosomes[i];
-    }
-
     // Select, crossover, and mutate the next generation
-    for (let generation = numberSaved; generation < this.population; generation++) {
+    for (let generation = 0; generation < this.population; generation++) {
         let parentA = this.selection();
         let parentB = this.selection();
         let child = parentA.crossover(parentB);
