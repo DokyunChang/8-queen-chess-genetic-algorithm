@@ -8,6 +8,8 @@ function Chromosome(genoSize) {
 Chromosome.prototype.initalize = function() {
     for (let index = 0; index < this.genes.length; index++) {
         Math.random() > 0.5 ? this.genes[index] = 1 : this.genes[index] = 0;   
+        // Evaluate the fitness of the inital chromosome
+        this.getFitness();
     }
 }
 

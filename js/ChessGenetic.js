@@ -38,12 +38,8 @@ ChessGenetic.prototype.selection = function() {
     return parentChromosome
 }
 
-// Run the genetic algorithm
+// Run one iteration of the genetic algorithm
 ChessGenetic.prototype.step = function() {
-    this.chromosomes.forEach(chromosome => {
-        //chromosome.getFitness();
-        chromosome.getFitness();
-    });
 
     let nextGenChromosomes = new Array();
 
@@ -54,6 +50,8 @@ ChessGenetic.prototype.step = function() {
         nextChromosome1.crossover(nextChromosome2);
         nextChromosome1.mutate(this.mutateFactor);
         nextChromosome2.mutate(this.mutateFactor);
+        nextChromosome1.getFitness();
+        nextChromosome2.getFitness();
         nextGenChromosomes.push(nextChromosome1, nextChromosome2);
     }
 
