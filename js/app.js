@@ -25,7 +25,7 @@ function display(curGeneration, bestFitness) {
 
 // Loop for each generation
 function genLoop (curGeneration, maxGen) {    
-  //setTimeout(function () {  
+  setTimeout(function () {  
     curGeneration++;   
     queenProblem.step();
     bestChromosome = queenProblem.getBestChromosome();
@@ -39,7 +39,7 @@ function genLoop (curGeneration, maxGen) {
     if (curGeneration < maxGen && bestChromosome.fitness != 1) { 
       genLoop(curGeneration, maxGen);          
     }                       
-//}, 0)
+}, 0)
 }
 
 // Form submit event listener
