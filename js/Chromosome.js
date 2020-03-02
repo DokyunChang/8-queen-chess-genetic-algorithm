@@ -46,14 +46,11 @@ Chromosome.prototype.getFitness = function() {
 
 // One point crossover with two parent chromosomes
 Chromosome.prototype.crossover = function(otherChromo) {
+    let child = new Chromosome(this.genes.length);
     let crossPoint = Math.round(Math.random()*(this.genes.length));
-    let offspring1 = this.genes.slice(0, crossPoint);
-    let offspring2 = otherChromo.genes.slice(0, crossPoint);
-    offspring1 = offspring1.concat(otherChromo.genes.slice(crossPoint));
-    offspring2 = offspring2.concat(this.genes.slice(crossPoint));
-    // Set the parent chromosome to the new offsprings
-    this.genes = offspring1;    
-    otherChromo.genes = offspring2;
+    child.genes = this.genes.slice(0, crossPoint).concat(otherChromo.genes.slice(crossPoint));
+    child.getFitness();
+    return child;
 }
 
 // Mutation of the genes
