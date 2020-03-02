@@ -41,19 +41,18 @@ ChessGenetic.prototype.selection = function() {
 
 // Run one iteration of the genetic algorithm
 ChessGenetic.prototype.step = function() {
-    console.log(this.chromosomes);
     let nextGenChromosomes = new Array();
 
     // Select, crossover, and mutate the next generation
-    for (let generation = 0; generation < this.population; generation+=2) {
+    for (let generation = 0; generation < this.population; generation++) {
         nextChromosome1 = this.selection();
         nextChromosome2 = this.selection();
         nextChromosome1.crossover(nextChromosome2);
         nextChromosome1.mutate(this.mutateFactor);
-        nextChromosome2.mutate(this.mutateFactor);
+        //nextChromosome2.mutate(this.mutateFactor);
         nextChromosome1.getFitness();
-        nextChromosome2.getFitness();
-        nextGenChromosomes.push(nextChromosome1, nextChromosome2);
+        //nextChromosome2.getFitness();
+        nextGenChromosomes.push(nextChromosome1);
     }
     
     // Set the next generation of chromosomes as the current ones

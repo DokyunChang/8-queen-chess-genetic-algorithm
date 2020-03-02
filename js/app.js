@@ -1,5 +1,6 @@
 var chessboard = new ChessGraph('myBoard'); // Chessboard graphic object
 var queenProblem; // Genetic Algorithm object
+var historicalBest = 0;
 
 // Convert the decimal coordinates of queens into coordinates the chessboard object understands
 function setPositions(coordinates) {
@@ -25,13 +26,18 @@ function display(curGeneration, bestFitness) {
 
 // Loop for each generation
 function genLoop (curGeneration, maxGen) {    
-  //setTimeout(function () {  
+  setTimeout(function () {  
     curGeneration++;   
     queenProblem.step();
     bestChromosome = queenProblem.getBestChromosome();
+    if (bestChromosome.fitness.toFixed(3) > historicalBest) {
+      historicalBest = bestChromosome.fitness.toFixed(3);
+      console.log(historicalBest);
+      console.log(bestChromosome.genes);
+    }
     display(curGeneration, bestChromosome.fitness.toFixed(3))
 
-    let coordinates = bestChromosome.binaryToDec();
+    let coordinates = bestChromosome.genes;
     let positions = setPositions(coordinates);
 
     chessboard.setQueens(positions);
@@ -39,12 +45,12 @@ function genLoop (curGeneration, maxGen) {
     if (curGeneration < maxGen && bestChromosome.fitness != 1) { 
       genLoop(curGeneration, maxGen);          
     }                       
-//}, 0)
+}, 0)
 }
 
 // Form submit event listener
 function startGen(event) {
-  const GENO_SIZE = 24;
+  const GENO_SIZE = 8;
   let population = parseInt(document.getElementById('input-chromo').value);
   let mutation = parseFloat(document.getElementById('input-mut').value);
   let maxGen = parseInt(document.getElementById('input-cut').value);
