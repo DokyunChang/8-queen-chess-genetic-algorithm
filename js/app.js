@@ -1,5 +1,6 @@
 var chessboard = new ChessGraph('myBoard'); // Chessboard graphic object
 var queenProblem; // Genetic Algorithm object
+var historicalBest = 0;
 
 // Convert the decimal coordinates of queens into coordinates the chessboard object understands
 function setPositions(coordinates) {
@@ -17,9 +18,12 @@ function setPositions(coordinates) {
   return positions
 }
 
-// Output the current generation and fiteness of the best chromosome to the front-end
-function display(curGeneration, bestFitness) {
+// Output the current generation to the front-end
+function displayGen(curGeneration) {
   document.getElementById('gen').innerHTML = 'Generation: ' + curGeneration;
+}
+// Output the fiteness of the best chromosome to the front-end
+function displayFit(bestFitness) {
   document.getElementById('best-fit').innerHTML = 'Best Fit Function: ' + bestFitness;
 }
 
@@ -29,12 +33,15 @@ function genLoop (curGeneration, maxGen) {
     curGeneration++;   
     queenProblem.step();
     bestChromosome = queenProblem.getBestChromosome();
-    display(curGeneration, bestChromosome.fitness.toFixed(3))
-
-    let coordinates = bestChromosome.binaryToDec();
-    let positions = setPositions(coordinates);
-
-    chessboard.setQueens(positions);
+    if (bestChromosome.fitness.toFixed(3) > historicalBest) {
+      historicalBest = bestChromosome.fitness.toFixed(3);
+      console.log(bestChromosome.genes);
+      let coordinates = bestChromosome.genes;
+      let positions = setPositions(coordinates);
+      chessboard.setQueens(positions);
+      displayFit(bestChromosome.fitness.toFixed(3));
+    }
+    displayGen(curGeneration)
 
     if (curGeneration < maxGen && bestChromosome.fitness != 1) { 
       genLoop(curGeneration, maxGen);          
@@ -44,11 +51,12 @@ function genLoop (curGeneration, maxGen) {
 
 // Form submit event listener
 function startGen(event) {
-  const GENO_SIZE = 24;
+  const GENO_SIZE = 8;
   let population = parseInt(document.getElementById('input-chromo').value);
   let mutation = parseFloat(document.getElementById('input-mut').value);
   let maxGen = parseInt(document.getElementById('input-cut').value);
   let curGeneration = 0;
+  historicalBest = 0;
   
   queenProblem = new ChessGenetic(GENO_SIZE, population, mutation);
   genLoop(curGeneration, maxGen);
