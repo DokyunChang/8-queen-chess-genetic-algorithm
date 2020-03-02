@@ -12,6 +12,13 @@ function ChessGenetic(geneSize, population, mutFactor) {
 
 // Select parents from current generation using Roulette Wheel Selection
 ChessGenetic.prototype.selection = function() {
+    /*
+    var pop = this.population-1;
+    var random = Math.random();
+    var randomIndex = Math.round(pop-pop*Math.pow(random, 5));
+    return this.chromosomes[randomIndex]
+    */
+
     let nonConflictSum = 0;
     let partialSum = 0;
     let rand = 0;
@@ -39,20 +46,21 @@ ChessGenetic.prototype.selection = function() {
     return selectedChromosome
 }
 
+
 // Run one iteration of the genetic algorithm
 ChessGenetic.prototype.step = function() {
     let nextGenChromosomes = new Array();
-
     // Select, crossover, and mutate the next generation
-    for (let generation = 0; generation < this.population; generation++) {
+    for (let generation = 0; generation < this.population; generation+=2) {
         nextChromosome1 = this.selection();
         nextChromosome2 = this.selection();
         nextChromosome1.crossover(nextChromosome2);
         nextChromosome1.mutate(this.mutateFactor);
-        //nextChromosome2.mutate(this.mutateFactor);
+        nextChromosome2.mutate(this.mutateFactor);
         nextChromosome1.getFitness();
-        //nextChromosome2.getFitness();
+        nextChromosome2.getFitness();
         nextGenChromosomes.push(nextChromosome1);
+        nextGenChromosomes.push(nextChromosome2);
     }
     
     // Set the next generation of chromosomes as the current ones

@@ -18,9 +18,12 @@ function setPositions(coordinates) {
   return positions
 }
 
-// Output the current generation and fiteness of the best chromosome to the front-end
-function display(curGeneration, bestFitness) {
+// Output the current generation to the front-end
+function displayGen(curGeneration) {
   document.getElementById('gen').innerHTML = 'Generation: ' + curGeneration;
+}
+// Output the fiteness of the best chromosome to the front-end
+function displayFit(bestFitness) {
   document.getElementById('best-fit').innerHTML = 'Best Fit Function: ' + bestFitness;
 }
 
@@ -32,15 +35,13 @@ function genLoop (curGeneration, maxGen) {
     bestChromosome = queenProblem.getBestChromosome();
     if (bestChromosome.fitness.toFixed(3) > historicalBest) {
       historicalBest = bestChromosome.fitness.toFixed(3);
-      console.log(historicalBest);
       console.log(bestChromosome.genes);
+      let coordinates = bestChromosome.genes;
+      let positions = setPositions(coordinates);
+      chessboard.setQueens(positions);
+      displayFit(bestChromosome.fitness.toFixed(3));
     }
-    display(curGeneration, bestChromosome.fitness.toFixed(3))
-
-    let coordinates = bestChromosome.genes;
-    let positions = setPositions(coordinates);
-
-    chessboard.setQueens(positions);
+    displayGen(curGeneration)
 
     if (curGeneration < maxGen && bestChromosome.fitness != 1) { 
       genLoop(curGeneration, maxGen);          
@@ -55,6 +56,7 @@ function startGen(event) {
   let mutation = parseFloat(document.getElementById('input-mut').value);
   let maxGen = parseInt(document.getElementById('input-cut').value);
   let curGeneration = 0;
+  historicalBest = 0;
   
   queenProblem = new ChessGenetic(GENO_SIZE, population, mutation);
   genLoop(curGeneration, maxGen);

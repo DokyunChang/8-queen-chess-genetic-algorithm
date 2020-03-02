@@ -13,27 +13,11 @@ Chromosome.prototype.initalize = function() {
     }
 }
 
-// Convert the genes binary to decimal
-/*
-Chromosome.prototype.binaryToDec = function() {
-    let decimalGenes = [];
-
-    for (let index = 0; index < this.genes.length; index+=3) {
-        let decimal = this.genes[index] * 4 + this.genes[index+1] * 2 + this.genes[index+2] * 1;
-        decimalGenes.push(decimal);
-    }
-
-    return decimalGenes;
-}
-*/
-
 Chromosome.prototype.getFitness = function() {
     let conflicts = 0;
     let numOfQueens = 8;
     // Array of the coordanates of the queens index=>colom | element=>row
     let queenArray = this.genes;
-
-    //queenArray = this.binaryToDec();
 
     // Iterates through array of queens, countes how many queens on each row and diagonals
     // Queens on n-slope diagonals have the same sum of column + row num (i + x)
@@ -64,34 +48,24 @@ Chromosome.prototype.getFitness = function() {
 Chromosome.prototype.crossover = function(otherChromo) {
     let crossPoint = Math.round(Math.random()*(this.genes.length));
     let offspring1 = this.genes.slice(0, crossPoint);
-    //let offspring2 = otherChromo.genes.slice(0, crossPoint);
+    let offspring2 = otherChromo.genes.slice(0, crossPoint);
     offspring1 = offspring1.concat(otherChromo.genes.slice(crossPoint));
-    //offspring2 = offspring2.concat(this.genes.slice(crossPoint));
+    offspring2 = offspring2.concat(this.genes.slice(crossPoint));
     // Set the parent chromosome to the new offsprings
-    this.genes = offspring1;
-    //otherChromo.genes = offspring2;
+    this.genes = offspring1;    
+    otherChromo.genes = offspring2;
 }
 
 // Mutation of the genes
 Chromosome.prototype.mutate = function(mutFactor) {
+    if (Math.random() < mutFactor) { // Number between 0 and 1
+        this.genes[Math.floor(Math.random()*8)] = Math.floor(Math.random()*8);
+    }
+    /*
     for (let index = 0; index < this.genes.length; index++) {
         if (Math.random() < mutFactor) { // Number between 0 and 1
             this.genes[index] = Math.floor(Math.random()*8);
-            /*
-            if (Math.random() > 0.5) {
-                if (this.genes[index] == 7)
-                    this.genes[index] = 0;
-                else 
-                    this.genes[index]++
-            }
-            else {
-                if (this.genes[index] == 0)
-                    this.genes[index] = 7
-                else
-                    this.genes[index]--;
-            }
-            */
-            //this.genes[index] = 1 - this.genes[index];
         }
     }
+    */
 }
