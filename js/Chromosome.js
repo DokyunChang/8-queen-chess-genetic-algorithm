@@ -1,7 +1,7 @@
 function Chromosome(genoSize) {
     this.fitness = 0;
     this.genes = new Array(genoSize);
-    this.conflictCount = 0;
+    this.nonConflict = 0;
 }
 
 // Populate the geno to have 0s and 1s
@@ -13,7 +13,7 @@ Chromosome.prototype.initalize = function() {
     }
 }
 
-// Convert the geno binary to decimal
+// Convert the genes binary to decimal
 Chromosome.prototype.binaryToDec = function() {
     let decimalGenes = [];
 
@@ -26,15 +26,12 @@ Chromosome.prototype.binaryToDec = function() {
 }
 
 Chromosome.prototype.getFitness = function() {
-    let numOfQueens = 8;
-    let queenArray = new Array(numOfQueens);
     let conflicts = 0;
+    let numOfQueens = 8;
+    // Array of the coordanates of the queens index=>colom | element=>row
+    let queenArray = new Array(); 
 
-    // Converts binary genes to decimal genes
-    for (let i = 1; i < (this.genes.length/3)+1; i++) {
-        let binaryValue = "" + this.genes[(i*3)-3] + this.genes[(i*3)-2] + this.genes[(i*3)-1];
-        queenArray[i-1] = parseInt(binaryValue, 2);
-    }
+    queenArray = this.binaryToDec();
 
     // Iterates through array of queens, countes how many queens on each row and diagonals
     // Queens on n-slope diagonals have the same sum of column + row num (i + x)
@@ -42,6 +39,7 @@ Chromosome.prototype.getFitness = function() {
     let q_row = new Array(numOfQueens*2).fill(0);
     let q_ndiag = new Array(numOfQueens*2).fill(0);
     let q_pdiag = new Array(numOfQueens*2).fill(0);
+
     for (let i = 0; i < numOfQueens; i++) {
         let x = queenArray[i];
         q_row[x]++; // Counter for rows
@@ -56,18 +54,19 @@ Chromosome.prototype.getFitness = function() {
         conflicts += ((q_ndiag[i] * (q_ndiag[i] - 1)) / 2);
         conflicts += ((q_pdiag[i] * (q_pdiag[i] - 1)) / 2);
     }
-    this.conflictCount = conflicts;
+    this.nonConflict = 28 - conflicts; // Number of non-conflict pairs in the chromosome
     this.fitness = 1-(conflicts/28); // 28 is maximum number of conflicts, inverse so higher fitness = less conflict percentage
 }
 
-// One point crossover with two parent Chromosomes
+// One point crossover with two parent chromosomes
 Chromosome.prototype.crossover = function(otherChromo) {
     let crossPoint = Math.round(Math.random()*(this.genes.length/3))*3;
     let offspring1 = this.genes.slice(0, crossPoint);
     let offspring2 = otherChromo.genes.slice(0, crossPoint);
+    
     offspring1 = offspring1.concat(otherChromo.genes.slice(crossPoint));
     offspring2 = offspring2.concat(this.genes.slice(crossPoint));
-    // Set the chromosome to new offsprings
+    // Set the parent chromosome to the new offsprings
     this.genes = offspring1;
     otherChromo.genes = offspring2;
 }
@@ -75,7 +74,7 @@ Chromosome.prototype.crossover = function(otherChromo) {
 // Mutation of the genes
 Chromosome.prototype.mutate = function(mutFactor) {
     for (let index = 0; index < this.genes.length; index++) {
-        if (Math.random() < mutFactor) {
+        if (Math.random() < mutFactor) { // Number between 0 and 1
             this.genes[index] = 1 - this.genes[index];
         }
     }
