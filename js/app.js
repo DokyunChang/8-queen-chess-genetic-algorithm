@@ -68,7 +68,7 @@ function genLoop (curGeneration, maxGen) {
         let positions = setPositions(coordinates);
         chessboard.setQueens(positions);
         displayFit(bestChromosome.fitness.toFixed(3));
-        
+
         unique = true;
         //Iterate though all solutions in solution array
         for (let i = 0; i < foundSolutions.length; i++) {
@@ -90,7 +90,7 @@ function genLoop (curGeneration, maxGen) {
       }
       genLoop(curGeneration, maxGen);          
     }
-    if (curGeneration >= maxGen)
+    if (curGeneration >= maxGen || foundSolutions.length >= 92)
       console.log(foundSolutions);
 }, 0)
 }
