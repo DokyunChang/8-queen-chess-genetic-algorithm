@@ -34,6 +34,21 @@ function displayFit(bestFitness) {
   document.getElementById('best-fit').innerHTML = 'Best Fit Function: ' + bestFitness;
 }
 
+// Output the current number of solutions found
+function displaySolutions(solutionsNum) {
+  document.getElementById('sol').innerHTML = 'Number of Unique Solutions: ' + solutionsNum;
+}
+
+// Add solution to drop menu
+function addSolution() {
+  let option = document.createElement('option');
+
+  option.text = 'Solution ' + foundSolutions.length;
+  option.value = foundSolutions.length - 1;
+  option.selected = true;
+  dropMenu.add(option);
+}
+
 function compareArray(a, b) {
   if (a.length != b.length) 
     return false;
@@ -50,15 +65,6 @@ function genLoop (curGeneration, maxGen) {
     curGeneration++;   
     queenProblem.step();
     bestChromosome = queenProblem.getBestChromosome();
-    /*
-    if (bestChromosome.fitness.toFixed(3) > historicalBest) {
-      historicalBest = bestChromosome.fitness.toFixed(3);
-      let coordinates = bestChromosome.genes;
-      let positions = setPositions(coordinates);
-      chessboard.setQueens(positions);
-      displayFit(bestChromosome.fitness.toFixed(3));
-    }
-    */
     displayGen(curGeneration)
 
     if (curGeneration < maxGen && foundSolutions.length < 92) { 
@@ -79,9 +85,12 @@ function genLoop (curGeneration, maxGen) {
             break;
           }
         }
-        //console.log(unique);
+
+        // If the found solution is unique
         if (unique) {
           foundSolutions.push(bestChromosome.genes);
+          displaySolutions(foundSolutions.length);
+          addSolution();
           console.log("Unique solutions found: " + foundSolutions.length);
         }
         historicalBest = 0;
@@ -108,6 +117,17 @@ function startGen(event) {
   event.preventDefault(); // Prevent the default behaviour of the form tag 
 }
 
+// DropMenu change event listener
+function selectSolution(event) {
+  let solutionIndex = dropMenu.value;
+  let coordinates = foundSolutions[solutionIndex];
+  let positions = setPositions(coordinates);
+
+  chessboard.setQueens(positions);
+}
+
 // Create the submit event
 const form = document.getElementById('form-gen');
+const dropMenu = document.getElementById('list-sol');
 form.addEventListener('submit', startGen);
+dropMenu.addEventListener('change', selectSolution);

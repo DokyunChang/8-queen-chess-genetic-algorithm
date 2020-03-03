@@ -58,11 +58,4 @@ Chromosome.prototype.mutate = function(mutFactor) {
     if (Math.random() < mutFactor) { // Number between 0 and 1
         this.genes[Math.floor(Math.random()*8)] = Math.floor(Math.random()*8);
     }
-    /*
-    for (let index = 0; index < this.genes.length; index++) {
-        if (Math.random() < mutFactor) { // Number between 0 and 1
-            this.genes[index] = Math.floor(Math.random()*8);
-        }
-    }
-    */
 }
