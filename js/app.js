@@ -1,6 +1,13 @@
 var chessboard = new ChessGraph('myBoard'); // Chessboard graphic object
 var queenProblem; // Genetic Algorithm object
 var historicalBest = 0;
+var foundSolutions = [];
+var curGeneration = 0;
+var GENO_SIZE;
+var population;
+var mutation;
+var bestChromosome;
+var unique;
 
 // Convert the decimal coordinates of queens into coordinates the chessboard object understands
 function setPositions(coordinates) {
@@ -27,35 +34,73 @@ function displayFit(bestFitness) {
   document.getElementById('best-fit').innerHTML = 'Best Fit Function: ' + bestFitness;
 }
 
+function compareArray(a, b) {
+  if (a.length != b.length) 
+    return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i]-b[i] != 0)
+      return false; //False if different
+  } 
+  return true; //True if same
+}
+
 // Loop for each generation
 function genLoop (curGeneration, maxGen) {    
   setTimeout(function () {  
     curGeneration++;   
     queenProblem.step();
     bestChromosome = queenProblem.getBestChromosome();
+    /*
     if (bestChromosome.fitness.toFixed(3) > historicalBest) {
       historicalBest = bestChromosome.fitness.toFixed(3);
-      console.log(bestChromosome.genes);
       let coordinates = bestChromosome.genes;
       let positions = setPositions(coordinates);
       chessboard.setQueens(positions);
       displayFit(bestChromosome.fitness.toFixed(3));
     }
+    */
     displayGen(curGeneration)
 
-    if (curGeneration < maxGen && bestChromosome.fitness != 1) { 
+    if (curGeneration < maxGen && foundSolutions.length < 92) { 
+      //If solution found
+      if (bestChromosome.fitness == 1) {
+        let coordinates = bestChromosome.genes;
+        let positions = setPositions(coordinates);
+        chessboard.setQueens(positions);
+        displayFit(bestChromosome.fitness.toFixed(3));
+        
+        unique = true;
+        //Iterate though all solutions in solution array
+        for (let i = 0; i < foundSolutions.length; i++) {
+          //If current found solution is already in array
+          if (compareArray(foundSolutions[i], bestChromosome.genes)) {
+            unique = false;
+            console.log("Non-unique solution found");
+            break;
+          }
+        }
+        //console.log(unique);
+        if (unique) {
+          foundSolutions.push(bestChromosome.genes);
+          console.log("Unique solutions found: " + foundSolutions.length);
+        }
+        historicalBest = 0;
+        queenProblem.resetBoard();
+        bestChromosome = new Chromosome(8);
+      }
       genLoop(curGeneration, maxGen);          
-    }                       
+    }
+    if (curGeneration >= maxGen)
+      console.log(foundSolutions);
 }, 0)
 }
 
 // Form submit event listener
 function startGen(event) {
   const GENO_SIZE = 8;
-  let population = parseInt(document.getElementById('input-chromo').value);
-  let mutation = parseFloat(document.getElementById('input-mut').value);
-  let maxGen = parseInt(document.getElementById('input-cut').value);
-  let curGeneration = 0;
+  population = parseInt(document.getElementById('input-chromo').value);
+  mutation = parseFloat(document.getElementById('input-mut').value);
+  maxGen = parseInt(document.getElementById('input-cut').value);
   historicalBest = 0;
   
   queenProblem = new ChessGenetic(GENO_SIZE, population, mutation);

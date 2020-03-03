@@ -10,6 +10,13 @@ function ChessGenetic(geneSize, population, mutFactor) {
     }
 }
 
+ChessGenetic.prototype.resetBoard = function() {
+    for (let index = 0; index < this.chromosomes.length; index++) {
+        this.chromosomes[index] = new Chromosome(this.geneSize);
+        this.chromosomes[index].initalize();
+    }
+}
+
 // Sort Chromosomes array by descending order
 function compare(a, b) {
     let chromosome1 = a.fitness;
